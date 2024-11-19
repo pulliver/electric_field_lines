@@ -27,13 +27,23 @@
             stroke-width: 0.5;
             opacity: 0.6;
         }
+        .legend {
+            font-size: 12px;
+        }
+        .legend .color-box {
+            width: 12px;
+            height: 12px;
+            display: inline-block;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <h1>Interactive Electric Field Visualization</h1>
     <p>Started from an idea born during the study of the electrostatic fields lines</p>
-    <p>Click anywhere on the canvas to place a positive test charge and see the electric field vectors and force lines.</p>
+    <p>Click anywhere on the canvas to place a positive test charge and see the electric field vectors and field lines.</p>
     <svg id="canvas" width="600" height="600"></svg>
+    <div id="legend"></div>
 
     <script>
         // Constants and Canvas Setup
@@ -68,6 +78,33 @@
             .append("path")
             .attr("d", "M 0 0 L 10 5 L 0 10 Z")
             .attr("fill", "black");
+            // Add legend
+            function addLegend() {
+                const legendData = [
+                    { color: "red", text: "Red arrow: Repulsive force" },
+                    { color: "blue", text: "Blue arrow: Attractive force" },
+                    { color: "green", text: "Green arrow: Resultant force" },
+                    { color: "gray", text: "Gray lines: Field lines" }
+                ];
+
+                const legend = d3.select("#legend")
+                    .style("margin-top", "10px");
+
+                legendData.forEach(({ color, text }) => {
+                    const item = legend.append("div").attr("class", "legend");
+                    item.append("span")
+                        .attr("class", "color-box")
+                        .style("background-color", color)
+                        .style("display", "inline-block")
+                        .style("width", "12px")
+                        .style("height", "12px")
+                        .style("margin-right", "5px");
+                    item.append("span").text(text);
+                });
+            }
+
+            addLegend();
+
 
         // Calculate Electric Field
         function calculateField(x, y, charge, cx, cy) {
