@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Electric Field</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        svg {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        .charge {
+            stroke-width: 1;
+            stroke: black;
+        }
+        .vector {
+            stroke-width: 2;
+            marker-end: url(#arrow);
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Electric Field Visualization</h1>
+    <p>Click anywhere on the canvas to place a positive test charge and see the electric field vectors.</p>
+    <svg id="canvas" width="600" height="600"></svg>
+
+    <script>
+        // Constants and Canvas Setup
+        const width = 600, height = 600;
+        const svg = d3.select("#canvas");
+        const charges = [
+            { x: 200, y: 300, charge: 1, color: "red" },  // Positive fixed charge
+            { x: 400, y: 300, charge: -1, color: "blue" } // Negative fixed charge
+        ];
+
+        // Add fixed charges to the canvas
+        svg.selectAll(".charge")
+            .data(charges)
+            .enter()
+            .append("circle")
+            .attr("class", "charge")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", 10)
+            .attr("fill", d => d.color);
+
+        // Arrow marker for vectors
+        svg.append("defs")
+            .append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 0 10 10")
+            .attr("refX", 5)
+            .attr("refY", 5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M 0 0 L 10 5 L 0 10 Z")
+            .attr("fill", "black");
+
+        // Calculate Electric Field
+        function calculateField(x, y, charge, cx, cy) {
+            const dx = x - cx;
+            const dy = y - cy;
+            const rSquared = dx * dx + dy * dy;
+            const magnitude = charge / rSquared;
+            const distance = Math.sqrt(rSquared);
+            return {
+                fx: magnitude * dx / distance,
+                fy: magnitude * dy / distance
+            };
+        }
+
+        // Normalize vectors for consistent display
+        function normalizeVector(vx, vy, scale = 50) {
+            const magnitude = Math.sqrt(vx * vx + vy * vy);
+            return { nx: (vx / magnitude) * scale, ny: (vy / magnitude) * scale };
+        }
+
+        // Handle click events
+        svg.on("click", function (event) {
+            const [x, y] = d3.pointer(event);
+
+            // Remove existing vectors
+            svg.selectAll(".vector").remove();
+
+            // Calculate vectors
+            let fxTotal = 0, fyTotal = 0;
+
+            charges.forEach(charge => {
+                const { fx, fy } = calculateField(x, y, charge.charge, charge.x, charge.y);
+                const { nx, ny } = normalizeVector(fx, fy);
+                fxTotal += fx;
+                fyTotal += fy;
+
+                // Draw individual vectors
+                svg.append("line")
+                    .attr("class", "vector")
+                    .attr("x1", x)
+                    .attr("y1", y)
+                    .attr("x2", x + nx)
+                    .attr("y2", y + ny)
+                    .attr("stroke", charge.color);
+            });
+
+            // Draw resultant vector
+            const { nx: fxNorm, ny: fyNorm } = normalizeVector(fxTotal, fyTotal);
+            svg.append("line")
+                .attr("class", "vector")
+                .attr("x1", x)
+                .attr("y1", y)
+                .attr("x2", x + fxNorm)
+                .attr("y2", y + fyNorm)
+                .attr("stroke", "green");
+        });
+    </script>
+</body>
+</html>
