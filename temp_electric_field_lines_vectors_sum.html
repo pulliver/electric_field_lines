@@ -183,24 +183,23 @@
 
             // Add arrows at intervals along the smooth path
             path.forEach(([px, py], index) => {
-                if (index % 20 === 0 && index > 0) { // Place arrow every 30 points
-                    const nextPoint = path[index + 1];
-                    if (nextPoint) {
-                        svg.append("line")
-                            .attr("class", "arrow")
-                            .attr("x1", px)
-                            .attr("y1", py)
-                            .attr("x2", nextPoint[0])
-                            .attr("y2", nextPoint[1])
-                            .attr("stroke", "gray")
-                            .attr("stroke-width", 0.5)
-                            .attr("marker-end", "url(#field-arrow)");
+            if (index % 30 === 0 && index + 1 < path.length) { // Place arrow every 30 points
+                const [nx, ny] = path[index + 1]; // Next point
+                svg.append("line")
+                    .attr("class", "arrow")
+                    .attr("x1", px)
+                    .attr("y1", py)
+                    .attr("x2", nx)
+                    .attr("y2", ny)
+                    .attr("stroke", "gray")
+                    .attr("stroke-width", 0.5)
+                    .attr("marker-end", "url(#field-arrow)"); // Attach the arrow marker
                     }
-                }
-            });
-        }
-    });
-}
+                
+        });
+    }
+});
+
 
         // Draw field lines initially
         drawFieldLines();
