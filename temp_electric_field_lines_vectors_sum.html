@@ -140,13 +140,13 @@
 
             // Generate seed points around each charge
             const seedPoints = [];
-    charges.forEach(charge => {
-        for (let i = 0; i < numLinesPerCharge; i++) {
-            const angle = (2 * Math.PI / numLinesPerCharge) * i; // Uniform angles
-            const x = charge.x + radius * Math.cos(angle);
-            const y = charge.y + radius * Math.sin(angle);
-            seedPoints.push([x, y]);
-        }
+            charges.forEach(charge => {
+                for (let i = 0; i < numLinesPerCharge; i++) {
+                    const angle = (2 * Math.PI / numLinesPerCharge) * i; // Uniform angles
+                    const x = charge.x + radius * Math.cos(angle);
+                    const y = charge.y + radius * Math.sin(angle);
+                    seedPoints.push([x, y]);
+                }
     });
 
     // Trace field lines from each seed point

@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    text-align: center;
+}
+
+svg {
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+.vector {
+    stroke-width: 1;
+    marker-end: url(#arrow);
+}
+
+.field-value {
+    font-size: 10px;
+    fill: black;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
